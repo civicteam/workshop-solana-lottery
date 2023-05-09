@@ -979,6 +979,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-derive"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfb77679af88f8b125209d354a202862602672222e7f2313fdd6dc349bad4712"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.38",
+]
+
+[[package]]
 name = "num-integer"
 version = "0.1.45"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1392,6 +1403,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-gateway"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2d148eb75d0799f6825dc2a840b85c065e3d6d12212845add3e059163f98770e"
+dependencies = [
+ "borsh 0.10.3",
+ "num-derive 0.4.1",
+ "num-traits",
+ "solana-program",
+ "thiserror",
+]
+
+[[package]]
 name = "solana-program"
 version = "1.16.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1424,7 +1448,7 @@ dependencies = [
  "log",
  "memoffset",
  "num-bigint",
- "num-derive",
+ "num-derive 0.3.3",
  "num-traits",
  "parking_lot",
  "rand 0.7.3",
@@ -1721,6 +1745,7 @@ name = "workshop-solana-lottery"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "solana-gateway",
 ]
 
 [[package]]

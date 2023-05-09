@@ -26,7 +26,12 @@ export type WorkshopSolanaLottery = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "gatekeeperNetwork",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "enter",
@@ -39,6 +44,11 @@ export type WorkshopSolanaLottery = {
         {
           "name": "ticket",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -108,6 +118,10 @@ export type WorkshopSolanaLottery = {
             "type": "publicKey"
           },
           {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
+          {
             "name": "winner",
             "type": {
               "option": "u64"
@@ -163,7 +177,12 @@ export const IDL: WorkshopSolanaLottery = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "gatekeeperNetwork",
+          "type": "publicKey"
+        }
+      ]
     },
     {
       "name": "enter",
@@ -176,6 +195,11 @@ export const IDL: WorkshopSolanaLottery = {
         {
           "name": "ticket",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -242,6 +266,10 @@ export const IDL: WorkshopSolanaLottery = {
         "fields": [
           {
             "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "gatekeeperNetwork",
             "type": "publicKey"
           },
           {

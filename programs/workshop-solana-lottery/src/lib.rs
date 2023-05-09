@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
+use solana_gateway::Gateway;
 
-declare_id!("1o1owUQqURMoQY7ydHN6hjqUiQRniHBbgJXb1TMRG2j");
+declare_id!("1o2BymoRfoCwBnW2qr2oDjtqjhpNPA3JBj6tgk8raVf");
 
 pub const TICKET: &[u8] = b"ticket";
 
@@ -8,12 +9,23 @@ pub const TICKET: &[u8] = b"ticket";
 pub mod workshop_solana_lottery {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    pub fn initialize(ctx: Context<Initialize>, gatekeeper_network: Pubkey) -> Result<()> {
         ctx.accounts.lottery.authority = *ctx.accounts.authority.key;
+        ctx.accounts.lottery.gatekeeper_network = gatekeeper_network;
         Ok(())
     }
 
     pub fn enter(ctx: Context<Enter>) -> Result<()> {
+        let gateway_token = ctx.accounts.gateway_token.to_account_info();
+        Gateway::verify_gateway_token_account_info(
+                &gateway_token,
+                &ctx.accounts.applicant.key,
+                &ctx.accounts.lottery.gatekeeper_network,
+                None
+            ).map_err(|_e| {
+                msg!("Gateway token account verification failed");
+                ProgramError::InvalidArgument
+        })?;
         ctx.accounts.ticket.number = ctx.accounts.lottery.tickets;
         ctx.accounts.lottery.tickets += 1;
         Ok(())
@@ -60,6 +72,9 @@ pub struct Enter<'info> {
     )]
     pub ticket: Account<'info, Ticket>,
 
+    /// CHECK: Verified by the solana-gateway program
+    pub gateway_token: UncheckedAccount<'info>,
+
     #[account(mut)]
     pub applicant: Signer<'info>,
     pub rent: Sysvar<'info, Rent>,
@@ -96,11 +111,12 @@ pub struct Withdraw<'info> {
 #[derive(Default)]
 pub struct Lottery {
     pub authority: Pubkey,
+    pub gatekeeper_network: Pubkey,
     pub winner: Option<u64>,
     pub tickets: u64,
 }
 impl Lottery {
-    pub const SIZE: usize = 32 + (8 + 1) + 8 + 8;
+    pub const SIZE: usize = 32 + 32 + (8 + 1) + 8 + 8;
 }
 
 #[account]

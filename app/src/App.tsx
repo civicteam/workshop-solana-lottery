@@ -43,14 +43,14 @@ const Admin = () => {
 
 const Player = () => {
     const { client } = useLottery();
-    const { gatewayStatus } = useGateway();
+    const { gatewayStatus, gatewayToken } = useGateway();
     if (!client) return <></>;
 
     return (<div>
         <h1>Player Mode</h1>
         <IdentityButton />
         { gatewayStatus !== GatewayStatus.ACTIVE && <div>Verify you are a unique person before entering</div>}
-        { !client.ticket && <button disabled={gatewayStatus !== GatewayStatus.ACTIVE} onClick={() => client.enter()}>Enter Lottery</button>}
+        { !client.ticket && gatewayToken && <button disabled={gatewayStatus !== GatewayStatus.ACTIVE} onClick={() => client.enter(gatewayToken.publicKey)}>Enter Lottery</button>}
         { client.ticket && <p><>Your ticket: {client.ticket.number.toString()}</></p>}
         { client.lottery.winner && <p><>Winning ticket: {client.lottery.winner.toString()}</></p>}
         { client.ticket && client.lottery.winner?.toNumber() === client.ticket?.number.toNumber() && <div>

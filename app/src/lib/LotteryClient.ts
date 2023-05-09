@@ -8,7 +8,7 @@ import {
 import { AnchorProvider, IdlAccounts, Program } from "@coral-xyz/anchor";
 import { IDL, WorkshopSolanaLottery } from "./types/workshop_solana_lottery";
 
-const PROGRAM_ID = new PublicKey("1o1owUQqURMoQY7ydHN6hjqUiQRniHBbgJXb1TMRG2j");
+const PROGRAM_ID = new PublicKey("1o2BymoRfoCwBnW2qr2oDjtqjhpNPA3JBj6tgk8raVf");
 export const UNIQUENESS_PASS = new PublicKey("uniqobk8oGh4XBLMqM68K8M2zNu3CdYX7q5go7whQiv")
 
 export class LotteryClient {
@@ -42,7 +42,7 @@ export class LotteryClient {
   static async create(provider: AnchorProvider):Promise<LotteryClient> {
     const program = new Program<WorkshopSolanaLottery>(IDL, PROGRAM_ID, provider);
     const newLottery = Keypair.generate();
-    await program.methods.initialize().accounts({
+    await program.methods.initialize(UNIQUENESS_PASS).accounts({
       lottery: newLottery.publicKey,
       authority: provider.publicKey,
     }).signers([newLottery]).rpc();
@@ -62,13 +62,14 @@ export class LotteryClient {
     }).rpc();
   }
 
-  async enter(): Promise<TransactionSignature> {
+  async enter(gatewayToken: PublicKey): Promise<TransactionSignature> {
     if (this.ticket) throw new Error("You already have a ticket");
 
     return this.program.methods.enter().accounts({
         lottery: this.lotteryAddress,
         ticket: this.ticketAddress,
         applicant: this.authority,
+        gatewayToken
     }).rpc();
   }
 

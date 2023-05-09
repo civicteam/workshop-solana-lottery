@@ -5,7 +5,7 @@ types = "app/src/lib/types"
 seeds = false
 skip-lint = false
 [programs.localnet]
-workshop_solana_lottery = "1o1owUQqURMoQY7ydHN6hjqUiQRniHBbgJXb1TMRG2j"
+workshop_solana_lottery = "1o2BymoRfoCwBnW2qr2oDjtqjhpNPA3JBj6tgk8raVf"
 
 [registry]
 url = "https://api.apr.dev"
