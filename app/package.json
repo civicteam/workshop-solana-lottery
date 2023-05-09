@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@civic/solana-gateway-react": "^0.16.4-beta.4",
     "@coral-xyz/anchor": "^0.28.1-beta.2",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",

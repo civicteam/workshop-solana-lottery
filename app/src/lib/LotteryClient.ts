@@ -9,6 +9,7 @@ import { AnchorProvider, IdlAccounts, Program } from "@coral-xyz/anchor";
 import { IDL, WorkshopSolanaLottery } from "./types/workshop_solana_lottery";
 
 const PROGRAM_ID = new PublicKey("1o1owUQqURMoQY7ydHN6hjqUiQRniHBbgJXb1TMRG2j");
+export const UNIQUENESS_PASS = new PublicKey("uniqobk8oGh4XBLMqM68K8M2zNu3CdYX7q5go7whQiv")
 
 export class LotteryClient {
   constructor(
@@ -19,6 +20,7 @@ export class LotteryClient {
     readonly ticket: IdlAccounts<WorkshopSolanaLottery>['ticket'] | null,
     readonly ticketAddress: PublicKey,
   ) {
+    console.log("Created new client...")
   }
 
   static async get(provider: AnchorProvider, lotteryAddress: PublicKey): Promise<LotteryClient | undefined> {
