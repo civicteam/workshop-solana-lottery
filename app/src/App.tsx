@@ -1,18 +1,27 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./App.css";
-import SolanaLogo from "./logo.svg";
-import { ConnectionProvider, useConnection, useWallet, WalletProvider } from "@solana/wallet-adapter-react";
+import user from "./user.jpg"
+import {
+  ConnectionProvider,
+  useAnchorWallet,
+  useConnection,
+  useWallet,
+  WalletProvider
+} from "@solana/wallet-adapter-react"
 import {
     WalletModalProvider,
     WalletMultiButton
 } from "@solana/wallet-adapter-react-ui";
 import { LotteryProvider, useLottery } from "./LotteryContext";
-import { clusterApiUrl, LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { clusterApiUrl, Connection, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { CivicPassProvider } from "./CivicPassContext";
 import { GatewayStatus, IdentityButton, useGateway } from "@civic/solana-gateway-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { CivicProfile, Profile } from "@civic/profile";
 
 import '@solana/wallet-adapter-react-ui/styles.css';
+
+const mainnetConnection = new Connection("https://solana-mainnet.rpc.extrnode.com");
 
 const Admin = () => {
     const { client, createNewLottery } = useLottery();
@@ -41,6 +50,29 @@ const Admin = () => {
     </div>)
 }
 
+const ProfileView = () => {
+    const wallet = useAnchorWallet();
+    const [profile, setProfile] = useState<Profile>();
+    useEffect(() => {
+        if (!wallet) return;
+        CivicProfile.get(wallet.publicKey.toString(), {
+            solana: { connection: mainnetConnection },
+        }).then(setProfile);
+    }, [wallet]);
+
+    if (!profile) return <></>
+
+    return <div style={{ paddingTop: "10px" }}>
+        <div>
+            <img width={100} src={profile.image?.url || user} alt="profile" style={{
+                borderRadius: "50%",
+            }}/>
+        </div>
+        <h3>{profile.name?.value}</h3>
+        <a href={"https://civic.me/" + wallet?.publicKey}>View Profile</a>
+    </div>;
+}
+
 const Player = () => {
     const { client } = useLottery();
     const { gatewayStatus, gatewayToken } = useGateway();
@@ -62,7 +94,7 @@ const Player = () => {
 
 const Dashboard = () => {
     const wallet = useWallet()
-    const { client, createNewLottery } = useLottery();
+    const { client } = useLottery();
 
     if (!wallet.connected || !wallet.publicKey) return <></>
 
@@ -75,7 +107,7 @@ const Dashboard = () => {
 const Content = () =>
   <header className="App-header">
       <WalletMultiButton />
-      <img src={SolanaLogo} className="App-logo" alt="logo" />
+      <ProfileView/>
       <Dashboard />
   </header>
 
